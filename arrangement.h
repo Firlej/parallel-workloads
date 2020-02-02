@@ -51,14 +51,9 @@ public:
         }
     }
 
-    void arrange() {
-
-        // 9999 36.282  3640292 3573654 492480041 329238868
-        // 9999 833.055 3640292 3573654 492374984 329238868
-        // 10000 36.400 3640292 3573654 496055290 332804689
+    void arrange(int time_limit) {
 
         greedy();
-//        basic();
 
         improvements_start = clock();
 
@@ -151,7 +146,7 @@ public:
                 last_improved = clock();
 //                printf("Count: %d\n", count);
                 if (pcmax != cmax || true) {
-                    print_stats();
+//                    print_stats();
 //                    c.refresh();
 //                    c.show();
                 }
@@ -159,7 +154,7 @@ public:
 
             count++;
 
-            if (time > 100) {
+            if (time > time_limit) {
                 break;
             }
         }

@@ -44,11 +44,10 @@ int main(int argc, char *argv[]) {
     ios::sync_with_stdio(false);
     srand(time(NULL));
 
-    string filename = "test6.txt";
-    filename = "LANL-CM5-1994-4.1-cln.swf";
+    string filename = "test.txt";
+//    filename = "LANL-CM5-1994-4.1-cln.swf";
 //    filename = "SDSC-SP2-1998-3.1-cln.swf";
-    filename = "DAS2-fs0-2003-1.swf";
-//    filename = "test6.txt";
+//    filename = "DAS2-fs0-2003-1.swf";
     int limiter = INT32_MAX;
     limiter = 1000;
     // for 60 Cmax 28959
@@ -56,6 +55,7 @@ int main(int argc, char *argv[]) {
     filename = argc >= 2 ? argv[1] : filename;
     limiter = argc >= 3 ? atoi(argv[2]) : limiter;
     string outfilename = argc >= 4 ? argv[3] : "output.txt";
+    int time_limit = argc >= 5 ? atoi(argv[4]) : 5;
 
 //    if (BENCHAMARK) {
 ////        printf("limiter a_time a_cmax a_sumcj b_time b_cmax b_sumcj BEST_cmax BEST_sumcj\n");
@@ -91,14 +91,14 @@ int main(int argc, char *argv[]) {
     Arrangement::print_stats_headers();
 
     Arrangement a(JOBS);
-    a.greedy();
-//    a.arrange();
+//    a.greedy();
+    a.arrange(time_limit);
     a.print_stats();
 
-    a.output_to_file("output.txt");
+    a.output_to_file(outfilename);
 
-    string cmd = "chk-pata.exe " + filename + " output.txt 1";
-    cout << endl << exec(cmd.c_str());
+//    string cmd = "chk-pata.exe " + filename + " " + outfilename + " 1";
+//    cout << endl << exec(cmd.c_str());
 
     return 0;
 }
