@@ -39,8 +39,6 @@ string exec(const char *cmd) {
 
 int main(int argc, char *argv[]) {
 
-    // ./a LANL-CM5-1994-4.1-cln.swf 1000
-
     ios::sync_with_stdio(false);
     srand(time(NULL));
 
@@ -87,8 +85,6 @@ int main(int argc, char *argv[]) {
     FOR(i, JOBS.size()) {
         JOBS[i].index = i;
     }
-
-    Arrangement::print_stats_headers();
 
     Arrangement a(JOBS);
 //    a.greedy();

@@ -82,6 +82,7 @@ public:
 //        jobs_print();
 
         printf("Skipping %d jobs out of %d in further optimisations.\n", job_skip_count, jobs.size());
+        Arrangement::print_stats_headers();
         calc_stats();
         print_stats();
 //        c.refresh();
