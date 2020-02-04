@@ -82,6 +82,7 @@ public:
 //        jobs_print();
 
         printf("Skipping %d jobs out of %d in further optimisations.\n", job_skip_count, jobs.size());
+        job_skip_count = 0;
         Arrangement::print_stats_headers();
         calc_stats();
         print_stats();
@@ -162,8 +163,6 @@ public:
     }
 
     void greedy() {
-        // 1000 1.145 288469 254047
-        // 5000 3.518 1814315 1793737
 
         start = clock();
         for (Job &j : jobs) {
@@ -232,11 +231,11 @@ public:
     }
 
     static void print_stats_headers() {
-        printf("JOBS_N TIME CMAX BEST_CMAX SUMCJ BEST_SUMCJ\n");
+        printf("JOBS_N TIME SUMCJ BEST_SUMCJ CMAX BEST_CMAX\n");
     }
 
     void print_stats() {
-        printf("%d %.3f %d %d %d %d\n", JOBS_N, time, cmax, theoretical_cmax, sumcj, theoretical_sumcj);
+        printf("%d %.2f %lld %lld %lld %lld\n", JOBS_N, time, sumcj, theoretical_sumcj, cmax, theoretical_cmax);
     }
 
     void jobs_print() {

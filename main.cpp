@@ -56,9 +56,9 @@ int main(int argc, char *argv[]) {
     int time_limit = argc >= 5 ? atoi(argv[4]) : 5;
 
 //    if (BENCHAMARK) {
-////        printf("limiter a_time a_cmax a_sumcj b_time b_cmax b_sumcj BEST_cmax BEST_sumcj\n");
+//        printf("limiter a_time a_cmax a_sumcj b_time b_cmax b_sumcj BEST_cmax BEST_sumcj\n");
 //        Arrangement::print_stats_headers();
-//        for (limiter = 0; limiter <= 50; limiter += 1) {
+//        for (limiter = 0; limiter <= 40000; limiter += 250) {
 //            JOBS.clear();
 //            init(filename, limiter);
 //
@@ -70,11 +70,11 @@ int main(int argc, char *argv[]) {
 //
 //            Arrangement a(JOBS);
 //            a.basic();
-//            a.print_stats();
-////            Arrangement b(JOBS);
-////            b.greedy();
+////            a.print_stats();
+//            Arrangement b(JOBS);
+//            b.greedy();
 //
-////            printf("%d %.2f %d %lld %.2f %d %lld %d %lld\n", JOBS.size(), a.time, a.cmax, a.sumcj, b.time, b.cmax, b.sumcj, b.theoretical_cmax, b.theoretical_sumcj);
+//            printf("%d %.2f %d %lld %.2f %d %lld %d %lld\n", JOBS.size(), a.time, a.cmax, a.sumcj, b.time, b.cmax, b.sumcj, b.theoretical_cmax, b.theoretical_sumcj);
 //        }
 //
 //        return 0;
@@ -87,10 +87,8 @@ int main(int argc, char *argv[]) {
     }
 
     Arrangement a(JOBS);
-//    a.greedy();
     a.arrange(time_limit);
     a.print_stats();
-
     a.output_to_file(outfilename);
 
 //    string cmd = "chk-pata.exe " + filename + " " + outfilename + " 1";
