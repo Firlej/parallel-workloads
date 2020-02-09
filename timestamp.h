@@ -16,6 +16,7 @@ public:
 
     int x;
     int free = NODES_N;
+    int max_continuous = NODES_N;
     vector<Job *> jobs;
 
     vector<pair<int, bool> > t;
@@ -26,9 +27,10 @@ public:
         t.push_back(make_pair(NODES_N, false));
     }
 
-    Timestamp(int _x, int _free, vector<pair<int, bool> > t_prev) {
+    Timestamp(int _x, int _free, vector<pair<int, bool> > t_prev, int _max_continuous) {
         x = _x;
         free = _free;
+        max_continuous = _max_continuous;
 
         for (int i = 0; i < t_prev.size(); ++i) {
             t.push_back(make_pair(t_prev[i].first, t_prev[i].second));
@@ -87,6 +89,12 @@ public:
                 i--;
             }
         }
+        max_continuous = 0;
+        for (int i = 0; i < t.size()-1; ++i) {
+            if (t[i].second == true) {
+                max_continuous = max(max_continuous, t[i+1].first - t[i].first);
+            }
+        }
     }
 
     bool can_place(Job *job) {
@@ -94,15 +102,7 @@ public:
             return false;
         }
 
-        int max_free = 0;
-
-        for (int i = 0; i < t.size() - 1; ++i) {
-            if (t[i].second && !t[i + 1].second) {
-                max_free = max(max_free, t[i + 1].first - t[i].first);
-            }
-        }
-
-        if (max_free < job->h) {
+        if (max_continuous < job->h) {
             return false;
         }
 
@@ -243,7 +243,7 @@ public:
                 Timestamp ts(x, data.back().free, data.back().jobs);
                 data.push_back(ts);
             } else {
-                Timestamp ts(x, data.back().free, data.back().t);
+                Timestamp ts(x, data.back().free, data.back().t, data.back().max_continuous);
                 data.push_back(ts);
             }
             return data.size() - 1;
@@ -262,7 +262,7 @@ public:
                     Timestamp ts(x, data[i - 1].free, data[i - 1].jobs);
                     data.insert(data.begin() + i, ts);
                 } else {
-                    Timestamp ts(x, data[i - 1].free, data[i - 1].t);
+                    Timestamp ts(x, data[i - 1].free, data[i - 1].t, data[i - 1].max_continuous);
                     data.insert(data.begin() + i, ts);
                 }
                 return i;

@@ -46,6 +46,10 @@ int main(int argc, char *argv[]) {
 //    filename = "LANL-CM5-1994-4.1-cln.swf";
 //    filename = "SDSC-SP2-1998-3.1-cln.swf";
 //    filename = "DAS2-fs0-2003-1.swf";
+//    filename = "Firlej2ship/test2.txt";
+//    filename = "LPC-EGEE-2004-1.2-cln.swf";
+//    filename = "LLNL-Thunder-2007-1.1-cln.swf"; // 29014 jobs make this program crash at sorting jobs after reading.
+//    filename = "SHARCNET-2005-2.swf";
     int limiter = INT32_MAX;
     limiter = 1000;
     // for 60 Cmax 28959
@@ -53,7 +57,7 @@ int main(int argc, char *argv[]) {
     filename = argc >= 2 ? argv[1] : filename;
     limiter = argc >= 3 ? atoi(argv[2]) : limiter;
     string outfilename = argc >= 4 ? argv[3] : "output.txt";
-    int time_limit = argc >= 5 ? atoi(argv[4]) : 5;
+    int time_limit = argc >= 5 ? atoi(argv[4]) : 1;
 
 //    if (BENCHAMARK) {
 //        printf("limiter a_time a_cmax a_sumcj b_time b_cmax b_sumcj BEST_cmax BEST_sumcj\n");
@@ -91,8 +95,8 @@ int main(int argc, char *argv[]) {
     a.print_stats();
     a.output_to_file(outfilename);
 
-//    string cmd = "chk-pata.exe " + filename + " " + outfilename + " 1";
-//    cout << endl << exec(cmd.c_str());
+    // string cmd = "chk-pata.exe " + filename + " " + outfilename + " 1";
+    // cout << endl << exec(cmd.c_str());
 
     return 0;
 }

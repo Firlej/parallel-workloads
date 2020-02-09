@@ -15,42 +15,47 @@ extern int NODES_N;
 
 void init(string filename, int limiter) {
 
-    string maxjobsstr = "; MaxJobs: ";
-    string maxjobsstr2 = ";       MaxJobs: ";
-    string maxnodesstr = "; MaxNodes: ";
-    string maxnodesstr2 = ";      MaxProcs: ";
+    vector<string> max_jobs_strings = {"; MaxJobs: ",";       MaxJobs: ",";         MaxJobs: "};
+    vector<string> max_nodes_strings = {"; MaxNodes: ", ";      MaxProcs: ", ";        MaxProcs: ", "; MaxProcs: "};
 
     ifstream file(filename);
     string s;
 
     if (file.good()) {
         while (getline(file, s) && s[0] == ';') {
-            if (s.substr(0, maxjobsstr.size()) == maxjobsstr) {
-                JOBS_N = stoi(s.substr(maxjobsstr.size(), s.size() - maxjobsstr.size()));
-            } else if (s.substr(0, maxnodesstr.size()) == maxnodesstr) {
-                NODES_N = stoi(s.substr(maxnodesstr.size(), s.size() - maxnodesstr.size()));
-            } else if (s.substr(0, maxjobsstr2.size()) == maxjobsstr2) {
-                JOBS_N = stoi(s.substr(maxjobsstr2.size(), s.size() - maxjobsstr2.size()));
-            } else if (s.substr(0, maxnodesstr2.size()) == maxnodesstr2) {
-                NODES_N = stoi(s.substr(maxnodesstr2.size(), s.size() - maxnodesstr2.size()));
+            for (string mjs  : max_jobs_strings) {
+                if (s.substr(0, mjs.size()) == mjs) {
+                    JOBS_N = stoi(s.substr(mjs.size(), s.size() - mjs.size()));
+                }
+            }
+            for (string mns  : max_nodes_strings) {
+                if (s.substr(0, mns.size()) == mns) {
+                    NODES_N = stoi(s.substr(mns.size(), s.size() - mns.size()));
+                }
             }
         }
 
+        limiter = min(JOBS_N, limiter);
+
         int t[18] = {0};
 
-        JOBS.resize(JOBS_N);
+        JOBS.resize(limiter);
 
-//        printf("%d %d\n", NODES_N, JOBS_N);
+        printf("Nodes: %d Jobs: %d\n", NODES_N, limiter);
 
         int i = 0;
 
         do {
+
             stringstream ss;
             ss << s;
 
-            for (int j = 0; j < 18; ++j) ss >> t[j];
+            for (int j = 0; j < 18; ++j) {
+                ss >> t[j];
+//                printf("%d ", t[j]);
+            }
 
-            if (t[1] >= 0 && t[3] > 0 && t[4] > 0) {
+            if (t[1] >= 0 && t[3] > 0 && t[4] > 0 && t[4] <= NODES_N && t[0] <= JOBS_N) {
                 JOBS[i].index = i;
                 JOBS[i].number = t[0];
                 JOBS[i].submit_time = t[1];
@@ -68,6 +73,7 @@ void init(string filename, int limiter) {
 
         file.close();
     } else {
-        printf("Failed to open file.\n");
+        cerr << "Failed to open file." << endl;
+        exit(EXIT_FAILURE);
     }
 }

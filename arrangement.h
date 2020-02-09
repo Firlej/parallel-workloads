@@ -86,6 +86,7 @@ public:
         Arrangement::print_stats_headers();
         calc_stats();
         print_stats();
+
 //        c.refresh();
 //        c.show();
 
@@ -148,15 +149,16 @@ public:
                 last_improved = clock();
 //                printf("Count: %d\n", count);
                 if (pcmax != cmax || true) {
-//                    print_stats();
-//                    c.refresh();
-//                    c.show();
+                //     print_stats();
+                //    c.refresh();
+                //    c.show();
                 }
             }
 
             count++;
 
             if (time > time_limit) {
+//                jobs_print();
                 break;
             }
         }
@@ -179,6 +181,9 @@ public:
                 int y = t.job_fits_at(t.data[i].x, &j);
                 if (y != -1) {
                     t.place_at(t.data[i].x, y, &j);
+//                    j.print();
+//                    c.refresh();
+//                    c.show();
                     break;
                 }
                 i++;
