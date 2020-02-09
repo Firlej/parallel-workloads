@@ -15,7 +15,7 @@ extern int NODES_N;
 
 void init(string filename, int limiter) {
 
-    vector<string> max_jobs_strings = {"; MaxJobs: ",";       MaxJobs: ",";         MaxJobs: "};
+    vector<string> max_jobs_strings = {"; MaxJobs: ", ";       MaxJobs: ", ";         MaxJobs: "};
     vector<string> max_nodes_strings = {"; MaxNodes: ", ";      MaxProcs: ", ";        MaxProcs: ", "; MaxProcs: "};
 
     ifstream file(filename);
@@ -50,17 +50,20 @@ void init(string filename, int limiter) {
             stringstream ss;
             ss << s;
 
-            for (int j = 0; j < 18; ++j) {
-                ss >> t[j];
+            int j = 0;
+            while (ss >> t[j]) {
 //                printf("%d ", t[j]);
+                j++;
             }
+//            printf("\n");
 
-            if (t[1] >= 0 && t[3] > 0 && t[4] > 0 && t[4] <= NODES_N && t[0] <= JOBS_N) {
+            if (j == 18 && t[1] >= 0 && t[3] > 0 && t[4] > 0 && t[4] <= NODES_N && t[0] <= JOBS_N) {
                 JOBS[i].index = i;
                 JOBS[i].number = t[0];
                 JOBS[i].submit_time = t[1];
                 JOBS[i].w = t[3];
                 JOBS[i].h = t[4];
+                JOBS[i].print();
                 i++;
             }
 
