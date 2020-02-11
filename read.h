@@ -57,13 +57,13 @@ void init(string filename, int limiter) {
             }
 //            printf("\n");
 
-            if (j == 18 && t[1] >= 0 && t[3] > 0 && t[4] > 0 && t[4] <= NODES_N && t[0] <= JOBS_N) {
+            if (j >= 3 && t[1] >= 0 && t[3] > 0 && t[4] > 0 && t[4] <= NODES_N && t[0] <= JOBS_N) {
                 JOBS[i].index = i;
                 JOBS[i].number = t[0];
                 JOBS[i].submit_time = t[1];
                 JOBS[i].w = t[3];
                 JOBS[i].h = t[4];
-                JOBS[i].print();
+//                JOBS[i].print();
                 i++;
             }
 
