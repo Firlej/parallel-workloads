@@ -149,9 +149,9 @@ public:
                 last_improved = clock();
 //                printf("Count: %d\n", count);
                 if (pcmax != cmax || true) {
-                //     print_stats();
-                //    c.refresh();
-                //    c.show();
+                    //     print_stats();
+                    //    c.refresh();
+                    //    c.show();
                 }
             }
 
@@ -171,22 +171,18 @@ public:
 
             t.data.erase(t.data.begin(), t.data.begin() + t.split_at(j.submit_time));
 
-            int ti = 0;
-            while (t.data[ti].x > j.submit_time) {
-                ti++;
-            }
-
             int i = 0;
             while (true) {
-                int y = t.job_fits_at(t.data[i].x, &j);
-                if (y != -1) {
-                    t.place_at(t.data[i].x, y, &j);
-//                    j.print();
-//                    c.refresh();
-//                    c.show();
+                pair<bool, int> result = t.job_fits_at(i, &j);
+                if (result.first) {
+                    t.place_at(t.data[i].x, result.second, &j);
                     break;
                 }
-                i++;
+                if (result.second == i) {
+                    i++;
+                } else {
+                    i = result.second + 1;
+                }
             }
         }
         calc_stats();

@@ -88,6 +88,7 @@ int main(int argc, char *argv[]) {
     sort(JOBS.begin(), JOBS.end(), Job::cmp);
     FOR(i, JOBS.size()) {
         JOBS[i].index = i;
+//        JOBS[i].submit_time = 0;
     }
 
     Arrangement a(JOBS);

@@ -90,9 +90,9 @@ public:
             }
         }
         max_continuous = 0;
-        for (int i = 0; i < t.size()-1; ++i) {
+        for (int i = 0; i < t.size() - 1; ++i) {
             if (t[i].second == true) {
-                max_continuous = max(max_continuous, t[i+1].first - t[i].first);
+                max_continuous = max(max_continuous, t[i + 1].first - t[i].first);
             }
         }
     }
@@ -199,23 +199,24 @@ public:
         j->placed = true;
     }
 
-    int job_fits_at(int x, Job *j) {
-
-        vector<Timestamp> backup = data;
-
-        vector<Timestamp>::iterator it;
-        it = lower_bound(data.begin(), data.end(), x, cmp_lower_bound());
-        int i = it - data.begin();
-
+    // boolean - true/false if can place here
+    // int - if bool true - y index for a job
+    // int - if bool false - index of the timestamp that checks failed on
+    pair<bool, int> job_fits_at(int index, Job *j) {
         vector<vector<int>> ys;
 
         int width = 0;
+        int i = index;
+
+        bool good = true;
+        int next_index;
         while (i < data.size() && width <= j->w) {
             if (!data[i].can_place(j)) {
-                return -1;
+                good = false;
+                next_index = i;
             }
 
-            if (data[i].free != NODES_N) {
+            if (good) {
                 ys.push_back(data[i].where_can_place(j));
             }
 
@@ -227,13 +228,18 @@ public:
             i++;
         }
 
-        if (ys.size() == 0) {
-            return 0;
+        if (!good) {
+            return make_pair(false, next_index);
         }
 
-        vector<int> res = common_ints(ys);
+        if (ys.size() == 0) {
+            return make_pair(true, 0);
+        }
 
-        return res.size() > 0 ? res[0] : -1;
+        int count_skip = 0;
+        vector<int> res = common_ints(ys, &count_skip);
+
+        return res.size() > 0 ? make_pair(true, res[0]) : make_pair(false, count_skip + index);
     }
 
     int split_at(int x) {
@@ -286,35 +292,39 @@ public:
         printf("\n");
     }
 
-    static vector<int> common_ints(vector<vector<int>> ys) {
+    static vector<int> common_ints(vector<vector<int>> ys, int *count_skip) {
 
         if (ys.size() == 1) {
             return ys[0];
         }
 
+        int count = 0;
         while (ys.size() > 1) {
-            for (int i = 0; i < ys.size(); ++i) {
-                if (i != ys.size() - 1) {
-                    vector<int> v(ys[i].size() + ys[i + 1].size());
-                    vector<int>::iterator it, st;
+            vector<int> v(ys[0].size() + ys[1].size());
+            vector<int>::iterator it, st;
 
-                    it = set_intersection(ys[i].begin(),
-                                          ys[i].end(),
-                                          ys[i + 1].begin(),
-                                          ys[i + 1].end(),
-                                          v.begin());
+            it = set_intersection(ys[0].begin(),
+                                  ys[0].end(),
+                                  ys[1].begin(),
+                                  ys[1].end(),
+                                  v.begin());
 
-                    vector<int> res;
+            vector<int> res;
 
-                    for (st = v.begin(); st != it; ++st) {
-                        res.push_back(*st);
-                    }
-
-                    ys[i] = res;
-
-                    ys.erase(ys.begin() + i + 1);
-                }
+            for (st = v.begin(); st != it; ++st) {
+                res.push_back(*st);
             }
+
+            ys[1] = res;
+
+            ys.erase(ys.begin());
+
+            if (ys[0].size() == 0) {
+                *count_skip = count;
+                break;
+            }
+
+            count++;
         }
 
         return ys[0];
