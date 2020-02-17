@@ -35,6 +35,7 @@ public:
     clock_t improvements_start = clock();
 
     float time = 0;
+    float improvements_time = 0;
     long long int pcmax = 0;
     long long int cmax = 0;
     long long int theoretical_cmax = 0;
@@ -81,9 +82,8 @@ public:
 
 //        jobs_print();
 
-        printf("Skipping %d jobs out of %d in further optimisations.\n", job_skip_count, jobs.size());
+//        printf("Skipping %d jobs out of %d in further optimisations.\n", job_skip_count, jobs.size());
         job_skip_count = 0;
-        Arrangement::print_stats_headers();
         calc_stats();
         print_stats();
 
@@ -178,32 +178,28 @@ public:
                     t.place_at(t.data[i].x, result.second, &j);
                     break;
                 }
-                if (result.second == i) {
-                    i++;
-                } else {
-                    i = result.second + 1;
-                }
+                i = result.second + 1;
             }
+//            if (jobs.size() / 10 < j.index && j.index <= jobs.size() / 10 + 1) {
+//                printf("10%\n");
+//            } else if (jobs.size() / 4 < j.index && j.index <= jobs.size() / 4 + 1) {
+//                printf("25%\n");
+//            } else if (jobs.size() / 2 < j.index && j.index <= jobs.size() / 2 + 1) {
+//                printf("50%\n");
+//            }
         }
         calc_stats();
     }
 
     void basic() {
         start = clock();
-        FOR(i, jobs.size()) {
-            Job *j = &jobs[i];
-
-            int ti = t.data.size() - 1;
-            if (t.data[ti].x >= j->submit_time) {
-                if (t.data[ti].can_place(j)) {
-                    t.data[ti].place(j);
-                    j->place(t.data[ti].x, NODES_N - t.data[ti].free - j->h);
-                    t.data.push_back(Timestamp(t.data[ti].x + j->w));
-                }
-            } else {
-                t.split_at(j->submit_time);
-                i--;
+        int x = 0;
+        for (Job &j : jobs) {
+            if (j.submit_time > x) {
+                x = j.submit_time;
             }
+            j.place(x, 0);
+            x += j.w;
         }
         calc_stats();
     }
@@ -217,6 +213,7 @@ public:
 
     void calc_stats() {
         time = (float) (clock() - start) / CLOCKS_PER_SEC;
+        improvements_time = (float) (clock() - improvements_start) / CLOCKS_PER_SEC;
         pcmax = cmax;
         psumcj = sumcj;
         cmax = 0;

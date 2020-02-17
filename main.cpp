@@ -51,18 +51,20 @@ int main(int argc, char *argv[]) {
 //    filename = "LLNL-Thunder-2007-1.1-cln.swf"; // 29014 jobs make this program crash at sorting jobs after reading.
 //    filename = "SHARCNET-2005-2.swf";
     int limiter = INT32_MAX;
-    limiter = 1000;
-    // for 60 Cmax 28959
 
     filename = argc >= 2 ? argv[1] : filename;
     limiter = argc >= 3 ? atoi(argv[2]) : limiter;
     string outfilename = argc >= 4 ? argv[3] : "output.txt";
-    int time_limit = argc >= 5 ? atoi(argv[4]) : 1;
+    string mode = argc >= 5 ? argv[4] : "optimized";
+    if (mode != "basic" && mode != "greedy" && mode != "optimized") {
+        cerr << "Available mode values: basic greedy optimized" << endl;
+        exit(EXIT_FAILURE);
+    }
+    int time_limit = argc >= 6 ? atoi(argv[5]) : 1;
 
 //    if (BENCHAMARK) {
-//        printf("limiter a_time a_cmax a_sumcj b_time b_cmax b_sumcj BEST_cmax BEST_sumcj\n");
 //        Arrangement::print_stats_headers();
-//        for (limiter = 0; limiter <= 40000; limiter += 250) {
+//        for (limiter = 1; limiter <= 1000000000; limiter += 1000) {
 //            JOBS.clear();
 //            init(filename, limiter);
 //
@@ -73,12 +75,8 @@ int main(int argc, char *argv[]) {
 //            }
 //
 //            Arrangement a(JOBS);
-//            a.basic();
-////            a.print_stats();
-//            Arrangement b(JOBS);
-//            b.greedy();
-//
-//            printf("%d %.2f %d %lld %.2f %d %lld %d %lld\n", JOBS.size(), a.time, a.cmax, a.sumcj, b.time, b.cmax, b.sumcj, b.theoretical_cmax, b.theoretical_sumcj);
+//            a.greedy();
+//            a.print_stats();
 //        }
 //
 //        return 0;
@@ -91,8 +89,15 @@ int main(int argc, char *argv[]) {
 //        JOBS[i].submit_time = 0;
     }
 
+    Arrangement::print_stats_headers();
     Arrangement a(JOBS);
-    a.arrange(time_limit);
+    if (mode == "basic") {
+        a.basic();
+    } else if (mode == "greedy") {
+        a.greedy();
+    } else if (mode == "optimized") {
+        a.arrange(time_limit);
+    }
     a.print_stats();
     a.output_to_file(outfilename);
 

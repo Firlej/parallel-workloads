@@ -122,7 +122,7 @@ public:
         return s;
     }
 
-    vector<int> where_can_place(Job *job) {
+    vector<int> where_can_place(Job *job, int max_y) {
 
         // returns a vector of y values of possible placements of job in this timestamp
         vector<int> res;
@@ -131,7 +131,7 @@ public:
 
                 int y = t[i].first;
 
-                while (y + job->h <= t[i + 1].first) {
+                while (y + job->h <= t[i + 1].first && max_y + 1 >= y) {
                     res.push_back(y);
                     y++;
                 }
@@ -190,8 +190,7 @@ public:
         for (; i < last; i++) {
             if (basic) {
                 data[i].place_basic(j);
-            }
-            else {
+            } else {
                 data[i].place(j);
             }
         }
@@ -210,26 +209,30 @@ public:
 
         bool good = true;
         int next_index;
+        int max_y = 0;
         while (i < data.size() && width <= j->w) {
+            if (data[i].t[data[i].t.size() - 2].first) {
+                max_y = max(max_y, data[i].t[data[i].t.size() - 2].first);
+            } else {
+                max_y = NODES_N;
+            }
             if (!data[i].can_place(j)) {
                 good = false;
                 next_index = i;
             }
-
-            if (good) {
-                ys.push_back(data[i].where_can_place(j));
-            }
-
-            if (i == data.size() - 1) {
-                width += j->w;
-            } else {
-                width += data[i + 1].x - data[i].x;
-            }
+            if (i == data.size() - 1) width += j->w; else width += data[i + 1].x - data[i].x;
             i++;
         }
-
         if (!good) {
             return make_pair(false, next_index);
+        }
+
+        width = 0;
+        i = index;
+        while (i < data.size() && width <= j->w) {
+            ys.push_back(data[i].where_can_place(j, max_y));
+            if (i == data.size() - 1) width += j->w; else width += data[i + 1].x - data[i].x;
+            i++;
         }
 
         if (ys.size() == 0) {
