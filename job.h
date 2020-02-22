@@ -72,7 +72,7 @@ public:
             return a.w > b.w;
         if (a.h != b.h)
             return a.h > b.h;
-        return true;
+        return false;
     }
 
     static bool overlap(const Job &a, const Job &b) {

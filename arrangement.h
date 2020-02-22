@@ -166,6 +166,8 @@ public:
 
     void greedy() {
 
+        t.reset();
+
         start = clock();
         for (Job &j : jobs) {
 
@@ -189,6 +191,64 @@ public:
 //            }
         }
         calc_stats();
+    }
+
+    pair<int, int> benchmark(int test_time) {
+
+        pair<int, int> slow_fast = make_pair(0, 0);
+
+        t.reset();
+
+        start = clock();
+        SPRINT_MODE = false;
+        for (Job &j : jobs) {
+            t.data.erase(t.data.begin(), t.data.begin() + t.split_at(j.submit_time));
+            int i = 0;
+            while (true) {
+                pair<bool, int> result = t.job_fits_at(i, &j);
+                if (result.first) {
+                    t.place_at(t.data[i].x, result.second, &j);
+                    break;
+                }
+                i = result.second + 1;
+            }
+            slow_fast.first++;
+            time = (float) (clock() - start) / CLOCKS_PER_SEC;
+            if (time >= test_time) {
+                break;
+            }
+        }
+
+        t.reset();
+
+        start = clock();
+        SPRINT_MODE = true;
+        for (Job &j : jobs) {
+            t.data.erase(t.data.begin(), t.data.begin() + t.split_at(j.submit_time));
+            int i = 0;
+            while (true) {
+                pair<bool, int> result = t.job_fits_at(i, &j);
+                if (result.first) {
+                    t.place_at(t.data[i].x, result.second, &j);
+                    break;
+                }
+                i = result.second + 1;
+            }
+            slow_fast.second++;
+            time = (float) (clock() - start) / CLOCKS_PER_SEC;
+            if (time >= test_time) {
+                break;
+            }
+        }
+
+        SPRINT_MODE = false;
+        if (slow_fast.first < slow_fast.second) {
+            SPRINT_MODE = true;
+        }
+
+//        printf("Good: %d Bad: %d\n", slow_fast.first, slow_fast.second);
+
+        return slow_fast;
     }
 
     void basic() {
@@ -229,11 +289,11 @@ public:
     }
 
     static void print_stats_headers() {
-        printf("JOBS_N TIME SUMCJ BEST_SUMCJ CMAX BEST_CMAX\n");
+        printf("%6s %7s %15s %15s %12s %12s\n", "JOBS_N", "TIME", "SUMCJ", "BEST_SUMCJ", "CMAX", "BEST_CMAX");
     }
 
     void print_stats() {
-        printf("%d %.2f %lld %lld %lld %lld\n", JOBS_N, time, sumcj, theoretical_sumcj, cmax, theoretical_cmax);
+        printf("%6d %7.2f %15lld %15lld %12lld %12lld\n", JOBS_N, time, sumcj, theoretical_sumcj, cmax, theoretical_cmax);
     }
 
     void jobs_print() {

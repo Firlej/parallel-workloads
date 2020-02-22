@@ -10,6 +10,7 @@
 using namespace std;
 
 extern int NODES_N;
+extern bool SPRINT_MODE;
 
 class Timestamp {
 public:
@@ -17,6 +18,7 @@ public:
     int x;
     int free = NODES_N;
     int max_continuous = NODES_N;
+    int max_node_taken = 0;
     vector<Job *> jobs;
 
     vector<pair<int, bool> > t;
@@ -95,9 +97,14 @@ public:
                 max_continuous = max(max_continuous, t[i + 1].first - t[i].first);
             }
         }
+        max_node_taken = t[t.size() - 1].first;
     }
 
     bool can_place(Job *job) {
+        if (SPRINT_MODE && NODES_N - max_node_taken < job->h) {
+            return false;
+        }
+
         if (free < job->h) {
             return false;
         }
@@ -160,6 +167,11 @@ public:
     bool basic = false;
 
     Timestamps() {
+        data.push_back(Timestamp(0));
+    }
+
+    void reset() {
+        data.clear();
         data.push_back(Timestamp(0));
     }
 

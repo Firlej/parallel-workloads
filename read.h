@@ -5,6 +5,9 @@
 #include <string>
 #include <fstream>
 #include <sstream>
+#include <algorithm>
+
+#define FOR(i, n) for(int i=0;i<n;++i)
 
 using namespace std;
 
@@ -39,6 +42,7 @@ void init(string filename, int limiter) {
 
         int t[18] = {0};
 
+        JOBS.clear();
         JOBS.resize(limiter);
 
         printf("Nodes: %d Jobs: %d\n", NODES_N, limiter);
@@ -46,7 +50,7 @@ void init(string filename, int limiter) {
         int i = 0;
 
         do {
-
+            
             stringstream ss;
             ss << s;
 
@@ -73,6 +77,13 @@ void init(string filename, int limiter) {
 
         JOBS_N = i;
         JOBS.resize(JOBS_N);
+
+        sort(JOBS.begin(), JOBS.end(), Job::cmp);
+
+        FOR(i, JOBS.size()) {
+            JOBS[i].index = i;
+//            JOBS[i].submit_time = 0;
+        }
 
         file.close();
     } else {
