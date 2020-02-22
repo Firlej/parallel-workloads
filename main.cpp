@@ -121,8 +121,8 @@ int main(int argc, char *argv[]) {
 
     a.output_to_file(outfilename);
 
-    string cmd = "chk-pata.exe " + filename + " " + outfilename + " 1";
-    cout << endl << exec(cmd.c_str());
+//    string cmd = "chk-pata.exe " + filename + " " + outfilename + " 1";
+//    cout << endl << exec(cmd.c_str());
 
     return 0;
 }
