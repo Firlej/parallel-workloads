@@ -141,6 +141,10 @@ public:
                             break;
                         }
                     }
+                    time = (float) (clock() - start) / CLOCKS_PER_SEC;
+                    if (time >= time_limit) {
+                        break;
+                    }
                 } while (moved_left);
             }
 

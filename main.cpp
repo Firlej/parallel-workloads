@@ -105,7 +105,7 @@ int main(int argc, char *argv[]) {
 //        return 0;
 //    }
 
-    printf("FILE: %s\n", filename.c_str());
+//    printf("FILE: %s\n", filename.c_str());
     init(filename, limiter);
     Arrangement a(JOBS);
     a.benchmark(test_time);
